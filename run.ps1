@@ -1,2 +1,9 @@
 & "$PSScriptRoot/build.ps1"
-& "$PSScriptRoot/bin/LimboKeys.exe"
+
+if ($LASTEXITCODE -ne 0) {
+	exit $LASTEXITCODE
+}
+
+Clear-Host
+
+& "$PSScriptRoot/build/Debug/LimboKeys.exe"
