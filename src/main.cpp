@@ -17,7 +17,11 @@ int main() {
 
 	printf("GLFW loaded successfully\n");
 
-	GLFWwindow* window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+	glfwWindowHint(GLFW_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, 1);
+
+	GLFWwindow* window = glfwCreateWindow(640, 480, "LIMBO", NULL, NULL);
 	if (!window) {
 		printf("Failed to Create GLFW Window!\n");
 		glfwTerminate();
