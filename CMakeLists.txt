@@ -19,6 +19,8 @@ set(GLEW_LIBRARIES lib/glew/lib)
 include_directories(${GLEW_INCLUDE_DIRS})
 link_directories(${GLEW_LIBRARIES})
 
+include_directories(include)
+
 add_executable(LimboKeys
 	src/main.cpp
 )
