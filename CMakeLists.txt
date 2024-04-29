@@ -22,6 +22,7 @@ link_directories(${GLEW_LIBRARIES})
 include_directories(include)
 
 add_executable(LimboKeys
+	src/key.cpp
 	src/main.cpp
 )
 
