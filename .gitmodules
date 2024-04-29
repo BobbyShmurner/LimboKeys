@@ -4,3 +4,6 @@
 [submodule "lib/glm"]
 	path = extern/glm
 	url = git@github.com:g-truc/glm.git
+[submodule "extern/stb"]
+	path = extern/stb
+	url = git@github.com:nothings/stb.git
