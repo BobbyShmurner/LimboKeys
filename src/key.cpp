@@ -7,6 +7,11 @@
 #include "glm/trigonometric.hpp"
 #include "glm/ext/vector_float4.hpp"
 
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include "GLFW/glfw3native.h"
+
+#include <windows.h>
+
 Key::Key(Color col, unsigned int width, unsigned int height) {
 	m_Col = col;
 
@@ -71,6 +76,13 @@ void Key::init(unsigned int width, unsigned int height) {
 
 	m_Window = glfwCreateWindow(width, height, "LIMBO", NULL, NULL);
 	glfwSetWindowUserPointer(m_Window, this);
+
+	{   /* signal not appear on task bar */
+		auto hwnd = glfwGetWin32Window(m_Window);
+		ShowWindow(hwnd, SW_HIDE);
+		SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
+		ShowWindow(hwnd, SW_SHOW);
+	}
 
 	glfwMakeContextCurrent(m_Window);
 

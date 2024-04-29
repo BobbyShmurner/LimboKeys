@@ -9,5 +9,4 @@ enum class Color {
 	AQUA,
 	LIME,
 	RED,
-	NONE,
 };

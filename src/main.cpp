@@ -31,7 +31,7 @@ int main() {
 	glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
 	GLFWwindow* window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, "LIMBO", NULL, NULL);
 	if (!window) {
@@ -40,6 +40,7 @@ int main() {
 		return -1;
 	}
 
+	glfwHideWindow(window);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
 
 	glfwMakeContextCurrent(window);
@@ -59,7 +60,7 @@ int main() {
 	printf("Creating Keys... ");
 
 	Key* keys[8] = {
-		new Key(Color::NONE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::GREEN, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 		new Key(Color::YELLOW, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 		new Key(Color::BLUE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 		new Key(Color::PURPLE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
