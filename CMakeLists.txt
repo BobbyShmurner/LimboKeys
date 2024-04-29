@@ -11,14 +11,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
 
-add_subdirectory(lib/glfw)
-include_directories(lib/glfw/include)
+add_subdirectory(extern/glfw)
+include_directories(extern/glfw/include)
 
-add_subdirectory(lib/glm)
-include_directories(lib/glm)
+add_subdirectory(extern/glm)
+include_directories(extern/glm)
 
-set(GLEW_INCLUDE_DIRS lib/glew/include)
-set(GLEW_LIBRARIES lib/glew/lib)
+include_directories(extern/stb)
+
+set(GLEW_INCLUDE_DIRS extern/glew/include)
+set(GLEW_LIBRARIES extern/glew/lib)
 
 include_directories(${GLEW_INCLUDE_DIRS})
 link_directories(${GLEW_LIBRARIES})
