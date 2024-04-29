@@ -27,5 +27,7 @@ public:
 	void setPos(float x, float y);
 	void setPosAbs(int x, int y);
 
+	void setVisibility(bool visible);
+
 	void render();
 };

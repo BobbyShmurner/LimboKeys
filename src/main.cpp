@@ -71,10 +71,14 @@ int main() {
 
 	printf("Complete!\n");
 
+	for (int i = 0; i < 8; i++) {
+		keys[i]->setPos(0.8f * (i / 3.5f - 1.0f), 0.0f);
+		keys[i]->setVisibility(true);
+	}
+
 	while (!glfwWindowShouldClose(window)) {
 		for (int i = 0; i < 8; i++) {
 			keys[i]->render();
-			keys[i]->setPos(0.8f * (i / 3.5f - 1.0f), 0.0f);
 		}
 
 		glfwPollEvents();

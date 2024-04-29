@@ -50,6 +50,7 @@ void Key::init(unsigned int width, unsigned int height) {
 	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
+	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
 	m_Window = glfwCreateWindow(width, height, "LIMBO", NULL, NULL);
 	glfwSetWindowUserPointer(m_Window, this);
@@ -178,6 +179,14 @@ void Key::render() {
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	glfwSwapBuffers(m_Window);
+}
+
+void Key::setVisibility(bool visible) {
+	if (visible) {
+		glfwShowWindow(m_Window);
+	} else {
+		glfwHideWindow(m_Window);
+	}
 }
 
 void Key::setPosAbs(int x, int y) {
