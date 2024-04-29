@@ -114,7 +114,7 @@ void imgui_worker() {
             ImGui::Checkbox("Demo Window", &showDemoWindow);
 
 			bool showKeysVal = showKeys;
-            ImGui::Checkbox("Updated Keys", &showKeysVal);
+            ImGui::Checkbox("Update Keys", &showKeysVal);
 			showKeys = showKeysVal;
 
 			float revealAmountVal = revealAmount;
