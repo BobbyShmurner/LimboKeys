@@ -34,4 +34,4 @@ add_executable(LimboKeys
 	src/shader.cpp
 )
 
-target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} Release/x64/glew32s glfw)
+target_link_libraries(LimboKeys Release/x64/glew32s ${OPENGL_LIBRARIES}  glfw)

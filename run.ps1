@@ -6,4 +6,4 @@ if ($LASTEXITCODE -ne 0) {
 
 Clear-Host
 
-& "$PSScriptRoot/build/Debug/LimboKeys.exe"
+& "$PSScriptRoot/build/LimboKeys.exe"
