@@ -17,9 +17,6 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 
 find_package(ImGui REQUIRED)
 
-# add_subdirectory(extern/glfw)
-# include_directories(extern/glfw/include)
-
 add_subdirectory(extern/glm)
 include_directories(extern/glm)
 
@@ -39,4 +36,4 @@ add_executable(LimboKeys
 	src/shader.cpp
 )
 
-target_link_libraries(LimboKeys Release/x64/glew32s ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES})
+target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES} Release/x64/glew32s -static-libgcc -static-libstdc++)
