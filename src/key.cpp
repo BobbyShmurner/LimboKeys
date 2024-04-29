@@ -71,7 +71,7 @@ void Key::init(unsigned int width, unsigned int height) {
 	glfwMakeContextCurrent(m_Window);
 
 	glDebugMessageCallback([](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
-		fprintf(stderr, "[OpenGL]: %s type = 0x%x, severity = 0x%x, message = %s\n", (type == GL_DEBUG_TYPE_ERROR ? "[ERROR]" : ""), type, severity, message);
+		fprintf(stderr, "[OpenGL]:%s %s\n", (type == GL_DEBUG_TYPE_ERROR ? " [ERROR]" : ""), message);
 	}, NULL);
 
 	glGenVertexArrays(1, &m_VertexArray);

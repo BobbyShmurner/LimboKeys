@@ -15,16 +15,16 @@ void glfw_error_callback(int error, const char* description) {
 }
 
 int main() {
-	printf("Loading GLFW... ");
+	printf("Loading GLFW...\n");
 
 	if (!glfwInit()) {
-		printf("FAILED!!!\nFailed to initialize GLFW!\n");
+		printf("Failed to initialize GLFW!\n");
 		return -1;
 	}
 
 	glfwSetErrorCallback(glfw_error_callback);
 
-	printf("Success!\n");
+	printf("Successfully initialized GLFW!\n");
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -54,10 +54,10 @@ int main() {
 	}
 
 	glDebugMessageCallback([](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
-		fprintf(stderr, "[OpenGL]: %s type = 0x%x, severity = 0x%x, message = %s\n", (type == GL_DEBUG_TYPE_ERROR ? "[ERROR]" : ""), type, severity, message);
+		fprintf(stderr, "[OpenGL]:%s %s\n", (type == GL_DEBUG_TYPE_ERROR ? " [ERROR]" : ""), message);
 	}, NULL);
 
-	printf("Creating Keys... ");
+	printf("Creating Keys...\n");
 
 	Key* keys[8] = {
 		new Key(Color::GREEN, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
@@ -70,7 +70,7 @@ int main() {
 		new Key(Color::RED, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 	};
 
-	printf("Complete!\n");
+	printf("Created Keys!\n");
 
 	for (int i = 0; i < 8; i++) {
 		keys[i]->setPos(0.8f * (i / 3.5f - 1.0f), 0.0f);
