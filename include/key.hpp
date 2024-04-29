@@ -13,6 +13,7 @@ class Key {
 private:
 	Color m_Col;
 	GLFWwindow* m_Window;
+	void* m_WindowHandle = nullptr;
 
 	unsigned int m_ShaderProgram;
 	unsigned int m_ElementBuffer;

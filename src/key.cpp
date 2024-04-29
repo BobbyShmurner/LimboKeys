@@ -81,10 +81,11 @@ void Key::init(unsigned int width, unsigned int height) {
 
 	#ifdef WIN32
 	{
-		auto hwnd = glfwGetWin32Window(m_Window);
-		ShowWindow(hwnd, SW_HIDE);
-		SetWindowLong(hwnd, GWL_EXSTYLE, WS_EX_TOOLWINDOW);
-		ShowWindow(hwnd, SW_SHOW);
+		m_WindowHandle = glfwGetWin32Window(m_Window);
+		if (m_WindowHandle) {
+			ShowWindow((HWND)m_WindowHandle, SW_HIDE);
+			SetWindowLongPtr((HWND)m_WindowHandle, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW);
+		}
 	}
 	#endif
 
@@ -191,6 +192,14 @@ void Key::render() {
 
 	glfwGetFramebufferSize(m_Window, &width, &height);
 	glfwMakeContextCurrent(m_Window);
+
+	#ifdef WIN32
+	{
+		if (m_WindowHandle) {
+			SetWindowPos((HWND)m_WindowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+		}
+	}
+	#endif
 
 	glUseProgram(m_ShaderProgram);
 	glViewport(0, 0, width, height);
