@@ -47,8 +47,9 @@ void Key::init(unsigned int width, unsigned int height) {
 	};
 
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	// glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+	glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
 
 	m_Window = glfwCreateWindow(width, height, "LIMBO", NULL, NULL);
 	glfwSetWindowUserPointer(m_Window, this);
