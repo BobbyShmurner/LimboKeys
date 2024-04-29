@@ -17,8 +17,9 @@ private:
 	unsigned int m_ShaderProgram;
 	unsigned int m_ElementBuffer;
 	unsigned int m_VertexArray;
-	unsigned int m_ColLocation;
-	unsigned int m_Texture;
+
+	unsigned int m_KeyTexture;
+	unsigned int m_OverlayTexture;
 
 	void init(unsigned int width, unsigned int height);
 
@@ -53,7 +54,7 @@ public:
 
 	void setVisibility(bool visible);
 
-	void positonForCircle(double t, double speed = 0.5, double amplitude = 0.6);
+	void positonForCircle(double t, float speed = 0.25, float amplitude = 0.6);
 
 	void render();
 };
