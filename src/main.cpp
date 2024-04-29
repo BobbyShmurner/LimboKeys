@@ -7,8 +7,8 @@
 #include "glm/gtc/constants.hpp"
 #include "glm/trigonometric.hpp"
 
-#define DEFAULT_WINDOW_WIDTH 130 * 2
-#define DEFAULT_WINDOW_HEIGHT 86 * 2
+const unsigned int DEFAULT_WINDOW_WIDTH = (unsigned int)(130 * 1.5);
+const unsigned int DEFAULT_WINDOW_HEIGHT = (unsigned int)(86 * 1.5);
 
 void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error: %s\n", description);
@@ -25,10 +25,6 @@ int main() {
 	glfwSetErrorCallback(glfw_error_callback);
 
 	printf("Success!\n");
-
-	printf("Sin 90: %f\n", glm::sin(glm::radians(90.0f)));
-	printf("Sin PI: %f\n", glm::sin(glm::pi<float>()));
-	printf("Sin PI/2: %f\n", glm::sin(glm::half_pi<float>()));
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -78,6 +74,7 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		for (int i = 0; i < 8; i++) {
 			keys[i]->render();
+			keys[i]->setPos(0.8f * (i / 3.5f - 1.0f), 0.0f);
 		}
 
 		glfwPollEvents();

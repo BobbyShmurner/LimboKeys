@@ -20,10 +20,12 @@ private:
 	unsigned int m_ElementBuffer;
 
 	void init(unsigned int width, unsigned int height);
-
 public:
 	Key(Color col, unsigned int width, unsigned int height);
 	~Key();
+
+	void setPos(float x, float y);
+	void setPosAbs(int x, int y);
 
 	void render();
 };

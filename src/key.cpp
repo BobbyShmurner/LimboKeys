@@ -178,3 +178,27 @@ void Key::render() {
 
 	glfwSwapBuffers(m_Window);
 }
+
+void Key::setPosAbs(int x, int y) {
+	glfwSetWindowPos(m_Window, x, y);
+}
+
+void Key::setPos(float x, float y) {
+	int screen_width, screen_height;
+	int width, height;
+	int xAbs, yAbs;
+
+	auto mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	screen_width = mode->width;
+	screen_height = mode->height;
+
+	glfwGetWindowSize(m_Window, &width, &height);
+
+	xAbs = (int)((x + 1) * 0.5f * screen_width);
+	yAbs = (int)((y + 1) * 0.5f * screen_height);
+
+	xAbs -= width / 2;
+	yAbs -= height / 2;
+
+	return setPosAbs(xAbs, yAbs);
+}
