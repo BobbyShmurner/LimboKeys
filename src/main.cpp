@@ -59,7 +59,7 @@ int main() {
 	printf("Creating Keys... ");
 
 	Key* keys[8] = {
-		new Key(Color::GREEN, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::NONE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 		new Key(Color::YELLOW, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 		new Key(Color::BLUE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 		new Key(Color::PURPLE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
@@ -78,6 +78,7 @@ int main() {
 
 	while (!glfwWindowShouldClose(window)) {
 		for (int i = 0; i < 8; i++) {
+			keys[i]->positonForCircle(glfwGetTime());
 			keys[i]->render();
 		}
 

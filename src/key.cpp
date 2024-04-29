@@ -3,6 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "glm/trigonometric.hpp"
+
 Key::Key(Color col, unsigned int width, unsigned int height) {
 	m_Col = col;
 
@@ -11,6 +13,15 @@ Key::Key(Color col, unsigned int width, unsigned int height) {
 
 Key::~Key() {
 	glfwDestroyWindow(m_Window);
+}
+
+void Key::positonForCircle(double t, double speed, double amplitude) {
+	double alpha = getCircleAlpha();
+
+	double x = -amplitude * glm::cos(alpha + t * speed);
+	double y = -amplitude * glm::sin(alpha + t * speed);
+
+	setPos(x, y);
 }
 
 void Key::init(unsigned int width, unsigned int height) {
@@ -167,7 +178,7 @@ void Key::render() {
 			glUniform4f(m_ColLocation, 1.0f, 0.259f, 0.259f, 1.0f); // Red #FF4242
 			break;
 		default:
-			glUniform4f(m_ColLocation, 1.0f, 1.0f, 1.0f, 1.0f); // White #FFFFFF
+			glUniform4f(m_ColLocation, 1.0f, 0.0f, 0.051f, 1.0f); // Unknown #FF000D
 			break;
 	}
 
