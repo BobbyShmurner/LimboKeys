@@ -20,9 +20,9 @@ void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error: %s\n", description);
 }
 
-std::atomic_bool show_keys = true;
+std::atomic_bool showKeys = true;
 std::atomic_bool running = true;
-
+std::atomic<float> revealAmount = 1.0f;
 
 void imgui_worker() {
 	printf("Creating ImGui Thread...\n");
@@ -76,7 +76,7 @@ void imgui_worker() {
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
-	bool show_demo_window = false;
+	bool showDemoWindow = false;
 
 	while (!glfwWindowShouldClose(window) && running) {
 		glfwPollEvents();
@@ -85,24 +85,28 @@ void imgui_worker() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-		if (show_demo_window) {
-			ImGui::ShowDemoWindow(&show_demo_window);
+		if (showDemoWindow) {
+			ImGui::ShowDemoWindow(&showDemoWindow);
 		}
 
 		{
             static float f = 0.0f;
             static int counter = 0;
 
-			bool running_val = running;
-        	ImGui::Begin("LIMBO", &running_val);
-			running = running_val;
+			bool runningVal = running;
+        	ImGui::Begin("LIMBO", &runningVal);
+			running = runningVal;
 
             ImGui::Text("FOCUS");
-            ImGui::Checkbox("Demo Window", &show_demo_window);
+            ImGui::Checkbox("Demo Window", &showDemoWindow);
 
-			bool show_keys_val = show_keys;
-            ImGui::Checkbox("Updated Keys", &show_keys_val);
-			show_keys = show_keys_val;
+			bool showKeysVal = showKeys;
+            ImGui::Checkbox("Updated Keys", &showKeysVal);
+			showKeys = showKeysVal;
+
+			float revealAmountVal = revealAmount;
+			ImGui::SliderFloat("Reveal Amount", &revealAmountVal, 0.0f, 1.0f);
+			revealAmount = revealAmountVal;
 
 			ImGui::Spacing();
 
@@ -202,14 +206,14 @@ int main() {
 	for (int i = 0; i < 8; i++) {
 		keys[i]->setPos(0.8f * (i / 3.5f - 1.0f), 0.0f);
 		keys[i]->setVisibility(true);
-		keys[i]->revealedAmount = 1.0f;
 	}
 
 	while (!glfwWindowShouldClose(window) && running) {
 		glfwPollEvents();
 
-		if (show_keys) {
+		if (showKeys) {
 			for (int i = 0; i < 8; i++) {
+				keys[i]->revealedAmount = revealAmount;
 				keys[i]->positonForCircle(glfwGetTime());
 				keys[i]->render();
 			}
