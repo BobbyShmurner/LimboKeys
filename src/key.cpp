@@ -7,6 +7,9 @@
 #include "glm/trigonometric.hpp"
 #include "glm/ext/vector_float4.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include "glm/gtx/compatibility.hpp"
+
 #ifdef WIN32
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include "GLFW/glfw3native.h"
@@ -208,7 +211,9 @@ void Key::render() {
 	unsigned int overlayColLoc = glGetUniformLocation(m_ShaderProgram, "overlayCol");
 
 	glm::vec4 col;
-	glm::vec4* overlayCol = &col;
+
+	glm::vec4 unknownCol = glm::vec4(1.0f, 0.0f, 0.051f, 1.0f); // Unknown Red #FF000D
+	glm::vec4 unknownOverlayCol = glm::vec4(1.0f, 0.945f, 0.102f, 1.0f); // Unknown Yellow #FFF11A
 
 	switch (m_Col) {
 		case Color::GREEN:
@@ -235,14 +240,13 @@ void Key::render() {
 		case Color::RED:
 			col = glm::vec4(1.0f, 0.259f, 0.259f, 1.0f); // Red #FF4242
 			break;
-		default:
-			col = glm::vec4(1.0f, 0.0f, 0.051f, 1.0f); // Unknown #FF000D
-			overlayCol = new glm::vec4(1.0f, 0.945f, 0.102f, 1.0f); // Unknown #FFF11A
-			break;
 	}
 
+	col = glm::lerp(unknownCol, col, revealedAmount);
+	glm::vec4 overlayCol = glm::lerp(unknownOverlayCol, col, revealedAmount);
+
 	glUniform4f(colLoc, col.r, col.g, col.b, col.a);
-	glUniform4f(overlayColLoc, overlayCol->r, overlayCol->g, overlayCol->b, overlayCol->a);
+	glUniform4f(overlayColLoc, overlayCol.r, overlayCol.g, overlayCol.b, overlayCol.a);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_KeyTexture);

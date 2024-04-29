@@ -47,6 +47,8 @@ private:
 		}
 	}
 public:
+	float revealedAmount = 0.0f;
+
 	Key(Color col, unsigned int width, unsigned int height);
 	~Key();
 
