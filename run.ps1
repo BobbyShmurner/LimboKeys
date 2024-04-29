@@ -1,4 +1,4 @@
-& "$PSScriptRoot/build.ps1"
+Invoke-Expression "& `"$PSScriptRoot/build.ps1`" $args"
 
 if ($LASTEXITCODE -ne 0) {
 	exit $LASTEXITCODE
