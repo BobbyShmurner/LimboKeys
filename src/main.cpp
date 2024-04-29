@@ -7,8 +7,8 @@
 #include "glm/gtc/constants.hpp"
 #include "glm/trigonometric.hpp"
 
-const unsigned int DEFAULT_WINDOW_WIDTH = (unsigned int)(130 * 1.5);
-const unsigned int DEFAULT_WINDOW_HEIGHT = (unsigned int)(86 * 1.5);
+const unsigned int DEFAULT_WINDOW_WIDTH = (unsigned int)(120 * 1.5);
+const unsigned int DEFAULT_WINDOW_HEIGHT = (unsigned int)(84 * 1.5);
 
 void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error: %s\n", description);
