@@ -37,30 +37,6 @@ void Key::positonForCircle(double t, float speed, float amplitude) {
 }
 
 void Key::init(unsigned int width, unsigned int height) {
-	static const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec2 aTexCoord;\n"
-	"out vec2 TexCoord;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "	TexCoord = aTexCoord;\n"
-    "}\0";
-
-	static const char *fragmentShaderSource = "#version 330 core\n"
-	"out vec4 FragColor;\n"
-	"in vec2 TexCoord;\n"
-	"uniform sampler2D keyTexture;\n"
-	"uniform sampler2D overlayTexture;\n"
-	"uniform vec4 col;\n"
-	"uniform vec4 overlayCol;\n"
-	"void main()\n"
-	"{\n"
-	"	vec4 base = texture(keyTexture, TexCoord) * col;\n"
-	"	vec4 overlay = texture(overlayTexture, TexCoord) * overlayCol;\n"
-	"	FragColor = vec4(mix(base.xyz, overlay.xyz, overlay.a), base.a);\n"
-	"}\0";
-
 	static float vertices[] = {
 		-1.0f, -1.0f, 0.0f, 	0.0f, 0.0f,
 		 1.0f, -1.0f, 0.0f, 	1.0f, 0.0f,
@@ -119,24 +95,8 @@ void Key::init(unsigned int width, unsigned int height) {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-
-	glCompileShader(vertexShader);
-	glCompileShader(fragmentShader);
-
-	m_ShaderProgram = glCreateProgram();
-
-	glAttachShader(m_ShaderProgram, vertexShader);
-	glAttachShader(m_ShaderProgram, fragmentShader);
-
-	glLinkProgram(m_ShaderProgram);
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	// Shader
+	m_Shader = new Shader("resources/shaders/key");
 
 	// Key
 
@@ -204,11 +164,8 @@ void Key::render() {
 	}
 	#endif
 
-	glUseProgram(m_ShaderProgram);
+	m_Shader->use();
 	glViewport(0, 0, width, height);
-
-	unsigned int colLoc = glGetUniformLocation(m_ShaderProgram, "col");
-	unsigned int overlayColLoc = glGetUniformLocation(m_ShaderProgram, "overlayCol");
 
 	glm::vec4 col;
 
@@ -245,16 +202,16 @@ void Key::render() {
 	col = glm::lerp(unknownCol, col, revealedAmount);
 	glm::vec4 overlayCol = glm::lerp(unknownOverlayCol, col, revealedAmount);
 
-	glUniform4f(colLoc, col.r, col.g, col.b, col.a);
-	glUniform4f(overlayColLoc, overlayCol.r, overlayCol.g, overlayCol.b, overlayCol.a);
+	m_Shader->setVec4("col", col);
+	m_Shader->setVec4("overlayCol", overlayCol);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_KeyTexture);
-	glUniform1i(glGetUniformLocation(m_ShaderProgram, "keyTexture"), 0);
+	m_Shader->setInt("keyTexture", 0);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_OverlayTexture);
-	glUniform1i(glGetUniformLocation(m_ShaderProgram, "overlayTexture"), 1);
+	m_Shader->setInt("overlayTexture", 1);
 
 	glBindVertexArray(m_VertexArray);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBuffer);

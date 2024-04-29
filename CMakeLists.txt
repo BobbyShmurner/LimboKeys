@@ -29,6 +29,7 @@ include_directories(include)
 add_executable(LimboKeys
 	src/key.cpp
 	src/main.cpp
+	src/shader.cpp
 )
 
 target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} Release/x64/glew32s glfw)

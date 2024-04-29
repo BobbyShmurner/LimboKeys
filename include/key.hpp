@@ -1,6 +1,7 @@
 #pragma once
 
 #include "colors.hpp"
+#include "shader.hpp"
 
 #define GLEW_STATIC
 
@@ -15,7 +16,7 @@ private:
 	GLFWwindow* m_Window;
 	void* m_WindowHandle = nullptr;
 
-	unsigned int m_ShaderProgram;
+	Shader* m_Shader;
 	unsigned int m_ElementBuffer;
 	unsigned int m_VertexArray;
 

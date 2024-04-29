@@ -83,7 +83,6 @@ int main() {
 			keys[i]->render();
 		}
 
-
 		glfwPollEvents();
 	}
 
