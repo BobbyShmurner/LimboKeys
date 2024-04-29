@@ -8,6 +8,7 @@
 
 #include "key.hpp"
 #include "colors.hpp"
+#include "fonts/LatoBold.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/constants.hpp"
@@ -71,7 +72,16 @@ void imgui_worker() {
 	style.GrabRounding = 8.f;
 	style.WindowRounding = 8.f;
 	style.PopupRounding = 8.f;
+	style.TabBarBorderSize = 2.0f;
 	style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+	auto font13 = io.Fonts->AddFontFromMemoryCompressedTTF(LatoBoldFont_compressed_data, LatoBoldFont_compressed_size, 13.0f);
+	auto font16 = io.Fonts->AddFontFromMemoryCompressedTTF(LatoBoldFont_compressed_data, LatoBoldFont_compressed_size, 16.0f);
+	auto font24 = io.Fonts->AddFontFromMemoryCompressedTTF(LatoBoldFont_compressed_data, LatoBoldFont_compressed_size, 24.0f);
+	auto font64 = io.Fonts->AddFontFromMemoryCompressedTTF(LatoBoldFont_compressed_data, LatoBoldFont_compressed_size, 64.0f);
+
+	io.FontDefault = font16;
+	io.Fonts->Build();
 
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
@@ -97,7 +107,10 @@ void imgui_worker() {
         	ImGui::Begin("LIMBO", &runningVal);
 			running = runningVal;
 
+			ImGui::PushFont(font64);
             ImGui::Text("FOCUS");
+			ImGui::PopFont();
+
             ImGui::Checkbox("Demo Window", &showDemoWindow);
 
 			bool showKeysVal = showKeys;
