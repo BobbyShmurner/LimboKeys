@@ -3,6 +3,10 @@
 #include "key.hpp"
 #include "colors.hpp"
 
+#include "glm/glm.hpp"
+#include "glm/gtc/constants.hpp"
+#include "glm/trigonometric.hpp"
+
 #define DEFAULT_WINDOW_WIDTH 130 * 2
 #define DEFAULT_WINDOW_HEIGHT 86 * 2
 
@@ -21,6 +25,10 @@ int main() {
 	glfwSetErrorCallback(glfw_error_callback);
 
 	printf("Success!\n");
+
+	printf("Sin 90: %f\n", glm::sin(glm::radians(90.0f)));
+	printf("Sin PI: %f\n", glm::sin(glm::pi<float>()));
+	printf("Sin PI/2: %f\n", glm::sin(glm::half_pi<float>()));
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
