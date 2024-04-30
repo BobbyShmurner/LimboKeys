@@ -241,6 +241,12 @@ void Key::render() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBuffer);
 
 	{
+		ZoneScopedN("glClearColor");
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	{
 		ZoneScopedN("glDrawElements");
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
