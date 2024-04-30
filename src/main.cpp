@@ -108,21 +108,13 @@ void imgui_worker() {
 
             ImGui::Checkbox("Demo Window", &showDemoWindow);
             
-			if (ImGui::Checkbox("Show Keys", &State::instance()->showKeys)) {
-				State::instance()->showKeys_Changed = true;
-			}
-
+			STATE_NOTIFY_IMGUI
+			ImGui::Checkbox("Show Keys", &STATE_IMGUI_PARMS(State::instance()->showKeys));
 			ImGui::Checkbox("Spin Keys", &State::instance()->spinKeys);
-
-            if (ImGui::Checkbox("Decorate Key Windows", &State::instance()->decorateKeyWindows)) {
-				State::instance()->decorateKeyWindows_Changed = true;
-			}
-			
+            STATE_NOTIFY_IMGUI
+			ImGui::Checkbox("Decorate Key Windows", &STATE_IMGUI_PARMS(State::instance()->decorateKeyWindows));
 			ImGui::SliderFloat("Reveal Amount", &State::instance()->revealAmount, 0.0f, 1.0f);
-
-			if (ImGui::SliderFloat("Rotation", &State::instance()->rotation, 0.0f, 360.0f)) {
-				State::instance()->rotation_Changed = true;
-			}
+			ImGui::SliderFloat("Rotation", &State::instance()->rotation, 0.0f, 360.0f);
 
 			ImGui::Spacing();
 
@@ -240,35 +232,22 @@ int main() {
 		ZoneScoped;
 		glfwPollEvents();
 
-		if (State::instance()->decorateKeyWindows_Changed) {
+		if STATE_CHANGED(State::instance()->decorateKeyWindows) {
 			for (int i = 0; i < 8; i++) {
 				keys[i]->setDecoration(State::instance()->decorateKeyWindows);
 			}
-
-			State::instance()->decorateKeyWindows_Changed = false;
 		}
 
-		if (State::instance()->showKeys_Changed) {
-			State::instance()->showKeys_Changed = false;
-
+		if STATE_CHANGED(State::instance()->showKeys) {
 			for (int i = 0; i < 8; i++) {
 				keys[i]->setVisibility(State::instance()->showKeys);
 			}
 		}
 
-		if (State::instance()->rotation_Changed) {
-			State::instance()->rotation_Changed = false;
-
-			for (int i = 0; i < 8; i++) {
-				keys[i]->rotation = State::instance()->rotation;
-			}
-		}
-
-		
-
 		if (State::instance()->showKeys) {
 			for (int i = 0; i < 8; i++) {
 				keys[i]->revealedAmount = State::instance()->revealAmount;
+				keys[i]->rotation = State::instance()->rotation;
 
 				if (State::instance()->spinKeys) {
 					keys[i]->positonForCircle(glfwGetTime(), State::instance()->speedX, State::instance()->speedY, State::instance()->amplitudeX, State::instance()->amplitudeY, State::instance()->freqX, State::instance()->freqY);
