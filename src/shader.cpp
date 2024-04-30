@@ -3,6 +3,7 @@
 #include "tracy/Tracy.hpp"
 
 Shader::Shader(std::string path) {
+    ZoneScoped;
 	std::string vertexPath = path + "/vert.glsl";
 	std::string fragmentPath = path + "/frag.glsl";
 

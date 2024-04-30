@@ -26,6 +26,12 @@ void glfw_error_callback(int error, const char* description) {
 std::atomic_bool showKeys = true;
 std::atomic_bool running = true;
 std::atomic<float> revealAmount = 1.0f;
+std::atomic<float> speed = 0.25f;
+std::atomic<float> speedY = 0.25f;
+std::atomic<float> amplitude = 0.6f;
+std::atomic<float> amplitudeY = 0.6f;
+std::atomic<float> freqX = 1.0f;
+std::atomic<float> freqY = 1.0f;
 
 void imgui_worker() {
 	printf("Creating ImGui Thread...\n");
@@ -122,6 +128,30 @@ void imgui_worker() {
 			float revealAmountVal = revealAmount;
 			ImGui::SliderFloat("Reveal Amount", &revealAmountVal, 0.0f, 1.0f);
 			revealAmount = revealAmountVal;
+
+			float speedVal = speed;
+			ImGui::SliderFloat("Speed X", &speedVal, -10.0f, 10.0f);
+			speed = speedVal;
+
+			float speedYVal = speedY;
+			ImGui::SliderFloat("Speed Y", &speedYVal, -10.0f, 10.0f);
+			speedY = speedYVal;
+
+			float amplitudeVal = amplitude;
+			ImGui::SliderFloat("Amplitude X", &amplitudeVal, -1.0f, 1.0f);
+			amplitude = amplitudeVal;
+
+			float amplitudeValY = amplitudeY;
+			ImGui::SliderFloat("Amplitude Y", &amplitudeValY, -1.0f, 1.0f);
+			amplitudeY = amplitudeValY;
+
+			float freqXVal = freqX;
+			ImGui::SliderFloat("Freq X", &freqXVal, -1.0f, 1.0f);
+			freqX = freqXVal;
+
+			float freqYVal = freqY;
+			ImGui::SliderFloat("Freq Y", &freqYVal, -1.0f, 1.0f);
+			freqY = freqYVal;
 
 			ImGui::Spacing();
 
@@ -230,7 +260,7 @@ int main() {
 		if (showKeys) {
 			for (int i = 0; i < 8; i++) {
 				keys[i]->revealedAmount = revealAmount;
-				keys[i]->positonForCircle(glfwGetTime());
+				keys[i]->positonForCircle(glfwGetTime(), speed, speedY, amplitude, amplitudeY, freqX, freqY);
 				keys[i]->render();
 			}
 		}
