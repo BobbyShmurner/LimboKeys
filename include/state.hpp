@@ -2,7 +2,6 @@
 
 class State {
 public:
-	bool showKeys = true;
 	bool running = true;
 	float revealAmount = 1.0f;
 	float speedX = 0.25f;
@@ -12,6 +11,9 @@ public:
 	float freqX = 1.0f;
 	float freqY = 1.0f;
 	float rotation = 0.0f;
+
+	bool showKeys = true;
+	bool showKeys_Changed = false;
 
 	bool decorateKeyWindows = false;
 	bool decorateKeyWindows_Changed = false;

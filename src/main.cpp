@@ -106,13 +106,17 @@ void imgui_worker() {
 			ImGui::PopFont();
 
             ImGui::Checkbox("Demo Window", &showDemoWindow);
-            ImGui::Checkbox("Update Keys", &State::instance()->showKeys);
+            
+			if (ImGui::Checkbox("Show Keys", &State::instance()->showKeys)) {
+				State::instance()->showKeys_Changed = true;
+			}
 
             if (ImGui::Checkbox("Decorate Key Windows", &State::instance()->decorateKeyWindows)) {
 				State::instance()->decorateKeyWindows_Changed = true;
 			}
 			
 			ImGui::SliderFloat("Reveal Amount", &State::instance()->revealAmount, 0.0f, 1.0f);
+			ImGui::SliderFloat("Rotation", &State::instance()->rotation, 0.0f, 360.0f);
 
 			ImGui::Spacing();
 
@@ -125,8 +129,6 @@ void imgui_worker() {
 				
 				ImGui::SliderFloat("Freq X", &State::instance()->freqX, -1.0f, 1.0f);
 				ImGui::SliderFloat("Freq Y", &State::instance()->freqY, -1.0f, 1.0f);
-
-				ImGui::SliderFloat("Rotation", &State::instance()->rotation, 0.0f, 360.0f);
 			}
 
 			ImGui::Spacing();
@@ -239,6 +241,14 @@ int main() {
 			}
 
 			State::instance()->decorateKeyWindows_Changed = false;
+		}
+
+		if (State::instance()->showKeys_Changed) {
+			State::instance()->showKeys_Changed = false;
+
+			for (int i = 0; i < 8; i++) {
+				keys[i]->setVisibility(State::instance()->showKeys);
+			}
 		}
 
 		if (State::instance()->showKeys) {
