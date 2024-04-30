@@ -99,9 +99,6 @@ void imgui_worker() {
 		}
 
 		{
-            static float f = 0.0f;
-            static int counter = 0;
-
         	ImGui::Begin("LIMBO", &State::instance()->running);
 
 			ImGui::PushFont(font64);
@@ -113,7 +110,7 @@ void imgui_worker() {
 			ImGui::SliderFloat("Reveal Amount", &State::instance()->revealAmount, 0.0f, 1.0f);
 
 			ImGui::Spacing();
-			
+
 			if (ImGui::CollapsingHeader("Circle Settings")) {
 				ImGui::SliderFloat("Speed X", &State::instance()->speedX, -10.0f, 10.0f);
 				ImGui::SliderFloat("Speed Y", &State::instance()->speedY, -10.0f, 10.0f);
