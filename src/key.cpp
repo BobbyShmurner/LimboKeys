@@ -17,6 +17,8 @@
 #include <windows.h>
 #endif
 
+#include "tracy/Tracy.hpp"
+
 Key::Key(Color col, unsigned int width, unsigned int height) {
 	m_Col = col;
 
@@ -28,6 +30,7 @@ Key::~Key() {
 }
 
 void Key::positonForCircle(double t, float speed, float amplitude) {
+	ZoneScoped;
 	double alpha = getCircleAlpha();
 
 	float x = -amplitude * (float)glm::cos(alpha + t * speed);
@@ -151,77 +154,119 @@ void Key::init(unsigned int width, unsigned int height) {
 }
 
 void Key::render() {
+	ZoneScoped;
 	int width, height;
 
-	glfwGetFramebufferSize(m_Window, &width, &height);
-	glfwMakeContextCurrent(m_Window);
-
-	#ifdef WIN32
 	{
-		if (m_WindowHandle) {
-			SetWindowPos((HWND)m_WindowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-		}
+		ZoneScopedN("GetFramebufferSize");
+		glfwGetFramebufferSize(m_Window, &width, &height);
 	}
-	#endif
+	{
+		ZoneScopedN("MakeContextCurrent");
+		glfwMakeContextCurrent(m_Window);
+	}
+
+	// Very Slow, also seems unecessary
+	// This was orginally added to ensure the windows were always on top
+	// But they seem to be on top already
+	
+	// #ifdef WIN32
+	// {
+	// 	if (m_WindowHandle) {
+	// 		ZoneScopedN("SetWindowPos");
+	// 		SetWindowPos((HWND)m_WindowHandle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	// 	}
+	// }
+	// #endif
 
 	m_Shader->use();
-	glViewport(0, 0, width, height);
+
+	{
+		ZoneScopedN("GlViewport");
+		glViewport(0, 0, width, height);
+	}
 
 	glm::vec4 col;
+	glm::vec4 overlayCol;
 
 	glm::vec4 unknownCol = glm::vec4(1.0f, 0.0f, 0.051f, 1.0f); // Unknown Red #FF000D
 	glm::vec4 unknownOverlayCol = glm::vec4(1.0f, 0.945f, 0.102f, 1.0f); // Unknown Yellow #FFF11A
 
-	switch (m_Col) {
-		case Color::GREEN:
-			col = glm::vec4(0.404f, 1.0f, 0.592f, 1.0f); // Green #67FF97
-			break;
-		case Color::YELLOW:
-			col = glm::vec4(1.0f, 0.827f, 0.412f, 1.0f); // Yellow #FFD369
-			break;
-		case Color::BLUE:
-			col = glm::vec4(0.275f, 0.435f, 1.0f, 1.0f); // Blue #466FFF
-			break;
-		case Color::PURPLE:
-			col = glm::vec4(0.588f, 0.275f, 1.0f, 1.0f); // Purple #9646FF
-			break;
-		case Color::PINK:
-			col = glm::vec4(1.0f, 0.373f, 0.906f, 1.0f); // Pink #FF5FE7
-			break;
-		case Color::AQUA:
-			col = glm::vec4(0.518f, 1.0f, 0.988f, 1.0f); // Aqua #84FFFC
-			break;
-		case Color::LIME:
-			col = glm::vec4(0.69f, 1.00f, 0.365f, 1.0f); // Lime #B0FF5D
-			break;
-		case Color::RED:
-			col = glm::vec4(1.0f, 0.259f, 0.259f, 1.0f); // Red #FF4242
-			break;
+	{
+		ZoneScopedN("ColSwitch");
+		switch (m_Col) {
+			case Color::GREEN:
+				col = glm::vec4(0.404f, 1.0f, 0.592f, 1.0f); // Green #67FF97
+				break;
+			case Color::YELLOW:
+				col = glm::vec4(1.0f, 0.827f, 0.412f, 1.0f); // Yellow #FFD369
+				break;
+			case Color::BLUE:
+				col = glm::vec4(0.275f, 0.435f, 1.0f, 1.0f); // Blue #466FFF
+				break;
+			case Color::PURPLE:
+				col = glm::vec4(0.588f, 0.275f, 1.0f, 1.0f); // Purple #9646FF
+				break;
+			case Color::PINK:
+				col = glm::vec4(1.0f, 0.373f, 0.906f, 1.0f); // Pink #FF5FE7
+				break;
+			case Color::AQUA:
+				col = glm::vec4(0.518f, 1.0f, 0.988f, 1.0f); // Aqua #84FFFC
+				break;
+			case Color::LIME:
+				col = glm::vec4(0.69f, 1.00f, 0.365f, 1.0f); // Lime #B0FF5D
+				break;
+			case Color::RED:
+				col = glm::vec4(1.0f, 0.259f, 0.259f, 1.0f); // Red #FF4242
+				break;
+		}
 	}
 
-	col = glm::lerp(unknownCol, col, revealedAmount);
-	glm::vec4 overlayCol = glm::lerp(unknownOverlayCol, col, revealedAmount);
+	{
+		ZoneScopedN("ColLerp");
+		col = glm::lerp(unknownCol, col, revealedAmount);
+		overlayCol = glm::lerp(unknownOverlayCol, col, revealedAmount);
+	}
 
 	m_Shader->setVec4("col", col);
 	m_Shader->setVec4("overlayCol", overlayCol);
 
+	{
+		ZoneScopedN("Bind Texture 0");
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_KeyTexture);
 	m_Shader->setInt("keyTexture", 0);
+	}
 
+	{
+		ZoneScopedN("Bind Texture 1");
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_OverlayTexture);
 	m_Shader->setInt("overlayTexture", 1);
+	}
 
+	{
+		ZoneScopedN("Bind VA");
 	glBindVertexArray(m_VertexArray);
+	}
+	{
+		ZoneScopedN("Bind EB");
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBuffer);
+	}
 
+	{
+		ZoneScopedN("Draw");
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
 
+	{
+		ZoneScopedN("Swap Buffers");
 	glfwSwapBuffers(m_Window);
+	}
 }
 
 void Key::setVisibility(bool visible) {
+	ZoneScoped;
 	if (visible) {
 		glfwShowWindow(m_Window);
 	} else {
@@ -230,10 +275,12 @@ void Key::setVisibility(bool visible) {
 }
 
 void Key::setPosAbs(int x, int y) {
+	ZoneScoped;
 	glfwSetWindowPos(m_Window, x, y);
 }
 
 void Key::setPos(float x, float y) {
+	ZoneScoped;
 	int screen_width, screen_height;
 	int width, height;
 	int xAbs, yAbs;

@@ -28,12 +28,15 @@ set(GLEW_LIBRARIES extern/glew/lib)
 include_directories(${GLEW_INCLUDE_DIRS})
 link_directories(${GLEW_LIBRARIES})
 
+add_subdirectory(extern/tracy)
+include_directories(extern/tracy/public/tracy)
+
 include_directories(include)
 
 add_executable(LimboKeys
-	src/key.cpp
-	src/main.cpp
+src/key.cpp
+src/main.cpp
 	src/shader.cpp
 )
 
-target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES} Release/x64/glew32s -static-libgcc -static-libstdc++)
+target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES} Release/x64/glew32s Tracy::TracyClient -static-libgcc -static-libstdc++)

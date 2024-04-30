@@ -14,6 +14,8 @@
 #include "glm/gtc/constants.hpp"
 #include "glm/trigonometric.hpp"
 
+#include "tracy/Tracy.hpp"
+
 const unsigned int DEFAULT_WINDOW_WIDTH = (unsigned int)(120 * 1.5);
 const unsigned int DEFAULT_WINDOW_HEIGHT = (unsigned int)(84 * 1.5);
 
@@ -222,6 +224,7 @@ int main() {
 	}
 
 	while (!glfwWindowShouldClose(window) && running) {
+		ZoneScoped;
 		glfwPollEvents();
 
 		if (showKeys) {
@@ -231,6 +234,8 @@ int main() {
 				keys[i]->render();
 			}
 		}
+
+		FrameMark;
 	}
 
 	running = false;

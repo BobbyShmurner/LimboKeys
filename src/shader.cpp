@@ -1,5 +1,7 @@
 #include "shader.hpp"
 
+#include "tracy/Tracy.hpp"
+
 Shader::Shader(std::string path) {
 	std::string vertexPath = path + "/vert.glsl";
 	std::string fragmentPath = path + "/frag.glsl";
@@ -69,25 +71,31 @@ Shader::Shader(std::string path) {
 }
 
 void Shader::use() {
+    ZoneScoped;
     glUseProgram(ID);
 }
 
 void Shader::setBool(const char* name, bool value) const {
+    ZoneScoped;
     glUniform1i(glGetUniformLocation(ID, name), (int)value);
 }
 
 void Shader::setInt(const char* name, int value) const {
+    ZoneScoped;
     glUniform1i(glGetUniformLocation(ID, name), value);
 }
 
 void Shader::setFloat(const char* name, float value) const {
+    ZoneScoped;
     glUniform1f(glGetUniformLocation(ID, name), value);
 }
 
 void Shader::setVec4(const char* name, glm::vec4 value) const {
+    ZoneScoped;
     setVec4(name, value.x, value.y, value.z, value.w);
 }
 
 void Shader::setVec4(const char* name, float x, float y, float z, float w) const {
+    ZoneScoped;
     glUniform4f(glGetUniformLocation(ID, name), x, y, z, w);
 }

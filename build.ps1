@@ -1,14 +1,44 @@
 param (
-	[switch] $Clean
+	[switch] $Clean,
+	[switch] $Release,
+	[ValidateSet($null, $true, $false)]
+	[object] $TracyOverride
 )
 
-if ($Clean) {
-	Remove-Item -Recurse -Force -Path "$PSScriptRoot/build" -ErrorAction SilentlyContinue | Out-Null
+$BuildPath = "$PSScriptRoot/build"
+if ($Release) {
+	$BuildPath += "/Release"
+	$BuildMode = "Release"
+} else {
+	$BuildPath += "/Debug"
+	$BuildMode = "Debug"
 }
 
-New-Item -ItemType Directory -Force -Path "$PSScriptRoot/build" | Out-Null
+if ($Clean) {
+	Remove-Item -Recurse -Force -Path $BuildPath -ErrorAction SilentlyContinue | Out-Null
+}
 
-Push-Location "$PSScriptRoot/build"
-& cmake .. -G Ninja
-& cmake --build .
-Pop-Location
+New-Item -ItemType Directory -Force -Path $BuildPath | Out-Null
+
+$Tracy = $Release
+if ($TracyOverride -ne $null) {
+	$Tracy = $TracyOverride
+}
+
+$cmakeArgs = "-DCMAKE_BUILD_TYPE=$BuildMode "
+
+if ($Tracy) {
+	$cmakeArgs += "-DTRACY_ENABLE=ON -DTRACY_ON_DEMAND=ON"
+} else {
+	$cmakeArgs += "-DTRACY_ENABLE=OFF -DTRACY_ON_DEMAND=OFF"
+}
+
+Push-Location $BuildPath
+
+try {
+	Write-Output "& cmake ../.. -G Ninja $cmakeArgs"
+	Invoke-Expression "& cmake ../.. -G Ninja $cmakeArgs"
+	& cmake --build .
+} finally {
+	Pop-Location
+}
