@@ -13,6 +13,9 @@ public:
 	float freqY = 1.0f;
 	float rotation = 0.0f;
 
+	bool decorateKeyWindows = false;
+	bool decorateKeyWindows_Changed = false;
+
 	static State* instance() {
 		static State* s = new State();
 		return s;

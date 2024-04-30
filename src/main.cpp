@@ -107,6 +107,11 @@ void imgui_worker() {
 
             ImGui::Checkbox("Demo Window", &showDemoWindow);
             ImGui::Checkbox("Update Keys", &State::instance()->showKeys);
+
+            if (ImGui::Checkbox("Decorate Key Windows", &State::instance()->decorateKeyWindows)) {
+				State::instance()->decorateKeyWindows_Changed = true;
+			}
+			
 			ImGui::SliderFloat("Reveal Amount", &State::instance()->revealAmount, 0.0f, 1.0f);
 
 			ImGui::Spacing();
@@ -227,6 +232,14 @@ int main() {
 	while (!glfwWindowShouldClose(window) && State::instance()->running) {
 		ZoneScoped;
 		glfwPollEvents();
+
+		if (State::instance()->decorateKeyWindows_Changed) {
+			for (int i = 0; i < 8; i++) {
+				keys[i]->setDecoration(State::instance()->decorateKeyWindows);
+			}
+
+			State::instance()->decorateKeyWindows_Changed = false;
+		}
 
 		if (State::instance()->showKeys) {
 			for (int i = 0; i < 8; i++) {

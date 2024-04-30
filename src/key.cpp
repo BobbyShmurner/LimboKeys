@@ -260,6 +260,16 @@ void Key::setVisibility(bool visible) {
 	}
 }
 
+void Key::setDecoration(bool show) {
+	ZoneScoped;
+
+	int width, height;
+	glfwGetWindowSize(m_Window, &width, &height);
+
+	glfwSetWindowAttrib(m_Window, GLFW_DECORATED, show);
+	glfwSetWindowSize(m_Window, width + 4 , height + 4);
+}
+
 void Key::setPosAbs(int x, int y) {
 	ZoneScoped;
 	#ifdef WIN32
