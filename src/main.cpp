@@ -18,7 +18,8 @@
 #include "tracy/Tracy.hpp"
 
 const unsigned int DEFAULT_WINDOW_WIDTH = (unsigned int)(120 * 1.5);
-const unsigned int DEFAULT_WINDOW_HEIGHT = (unsigned int)(84 * 1.5);
+const unsigned int DEFAULT_WINDOW_HEIGHT = DEFAULT_WINDOW_WIDTH;
+// const unsigned int DEFAULT_WINDOW_HEIGHT = (unsigned int)(84 * 1.5);
 
 void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error: %s\n", description);
@@ -214,14 +215,14 @@ int main() {
 	printf("Creating Keys...\n");
 
 	Key* keys[8] = {
-		new Key(Color::GREEN, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::YELLOW, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::BLUE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::PURPLE, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::PINK, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::AQUA, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::LIME, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::RED, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::GREEN,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::YELLOW,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::BLUE,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::PURPLE,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::PINK,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::AQUA,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::LIME,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::RED,		DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
 	};
 
 	printf("Created Keys!\n");
