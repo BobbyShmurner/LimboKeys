@@ -112,14 +112,18 @@ void imgui_worker() {
             ImGui::Checkbox("Update Keys", &State::instance()->showKeys);
 			ImGui::SliderFloat("Reveal Amount", &State::instance()->revealAmount, 0.0f, 1.0f);
 
-			ImGui::SliderFloat("Speed X", &State::instance()->speedX, -10.0f, 10.0f);
-			ImGui::SliderFloat("Speed Y", &State::instance()->speedY, -10.0f, 10.0f);
+			ImGui::Spacing();
 			
-			ImGui::SliderFloat("Amplitude X", &State::instance()->amplitudeX, -1.0f, 1.0f);
-			ImGui::SliderFloat("Amplitude Y", &State::instance()->amplitudeY, -1.0f, 1.0f);
-			
-			ImGui::SliderFloat("Freq X", &State::instance()->freqX, -1.0f, 1.0f);
-			ImGui::SliderFloat("Freq Y", &State::instance()->freqY, -1.0f, 1.0f);
+			if (ImGui::CollapsingHeader("Circle Settings")) {
+				ImGui::SliderFloat("Speed X", &State::instance()->speedX, -10.0f, 10.0f);
+				ImGui::SliderFloat("Speed Y", &State::instance()->speedY, -10.0f, 10.0f);
+				
+				ImGui::SliderFloat("Amplitude X", &State::instance()->amplitudeX, -1.0f, 1.0f);
+				ImGui::SliderFloat("Amplitude Y", &State::instance()->amplitudeY, -1.0f, 1.0f);
+				
+				ImGui::SliderFloat("Freq X", &State::instance()->freqX, -1.0f, 1.0f);
+				ImGui::SliderFloat("Freq Y", &State::instance()->freqY, -1.0f, 1.0f);
+			}
 
 			ImGui::Spacing();
 
