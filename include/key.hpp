@@ -58,7 +58,7 @@ public:
 
 	void setVisibility(bool visible);
 
-	void positonForCircle(double t, float speed = 0.25f, float speedY = 0.25f, float amplitude = 0.6f, float amplitudeY = 0.6f, float freqX = 1.0f, float freqY = 1.0f);
+	void positonForCircle(double t, float speedX = 0.25f, float speedY = 0.25f, float amplitudeX = 0.6f, float amplitudeY = 0.6f, float freqX = 1.0f, float freqY = 1.0f);
 
 	void render();
 };

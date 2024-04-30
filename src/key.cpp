@@ -30,11 +30,11 @@ Key::~Key() {
 	glfwDestroyWindow(m_Window);
 }
 
-void Key::positonForCircle(double t, float speed, float speedY, float amplitude, float amplitudeY, float freqX, float freqY) {
+void Key::positonForCircle(double t, float speedX, float speedY, float amplitudeX, float amplitudeY, float freqX, float freqY) {
 	ZoneScoped;
 	double alpha = getCircleAlpha();
 
-	float x = -amplitude * (float)glm::cos((alpha + t * speed) * freqX);
+	float x = -amplitudeX * (float)glm::cos((alpha + t * speedX) * freqX);
 	float y = -amplitudeY * (float)glm::sin((alpha + t * speedY) * freqY);
 
 	setPos(x, y);

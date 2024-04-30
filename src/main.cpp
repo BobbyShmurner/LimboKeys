@@ -7,6 +7,7 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "key.hpp"
+#include "state.hpp"
 #include "colors.hpp"
 #include "fonts/LatoBold.hpp"
 
@@ -22,16 +23,6 @@ const unsigned int DEFAULT_WINDOW_HEIGHT = (unsigned int)(84 * 1.5);
 void glfw_error_callback(int error, const char* description) {
     fprintf(stderr, "GLFW Error: %s\n", description);
 }
-
-std::atomic_bool showKeys = true;
-std::atomic_bool running = true;
-std::atomic<float> revealAmount = 1.0f;
-std::atomic<float> speed = 0.25f;
-std::atomic<float> speedY = 0.25f;
-std::atomic<float> amplitude = 0.6f;
-std::atomic<float> amplitudeY = 0.6f;
-std::atomic<float> freqX = 1.0f;
-std::atomic<float> freqY = 1.0f;
 
 void imgui_worker() {
 	printf("Creating ImGui Thread...\n");
@@ -96,7 +87,7 @@ void imgui_worker() {
 
 	bool showDemoWindow = false;
 
-	while (!glfwWindowShouldClose(window) && running) {
+	while (!glfwWindowShouldClose(window) && State::instance()->running) {
 		glfwPollEvents();
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -111,47 +102,24 @@ void imgui_worker() {
             static float f = 0.0f;
             static int counter = 0;
 
-			bool runningVal = running;
-        	ImGui::Begin("LIMBO", &runningVal);
-			running = runningVal;
+        	ImGui::Begin("LIMBO", &State::instance()->running);
 
 			ImGui::PushFont(font64);
             ImGui::Text("FOCUS");
 			ImGui::PopFont();
 
             ImGui::Checkbox("Demo Window", &showDemoWindow);
+            ImGui::Checkbox("Update Keys", &State::instance()->showKeys);
+			ImGui::SliderFloat("Reveal Amount", &State::instance()->revealAmount, 0.0f, 1.0f);
 
-			bool showKeysVal = showKeys;
-            ImGui::Checkbox("Update Keys", &showKeysVal);
-			showKeys = showKeysVal;
-
-			float revealAmountVal = revealAmount;
-			ImGui::SliderFloat("Reveal Amount", &revealAmountVal, 0.0f, 1.0f);
-			revealAmount = revealAmountVal;
-
-			float speedVal = speed;
-			ImGui::SliderFloat("Speed X", &speedVal, -10.0f, 10.0f);
-			speed = speedVal;
-
-			float speedYVal = speedY;
-			ImGui::SliderFloat("Speed Y", &speedYVal, -10.0f, 10.0f);
-			speedY = speedYVal;
-
-			float amplitudeVal = amplitude;
-			ImGui::SliderFloat("Amplitude X", &amplitudeVal, -1.0f, 1.0f);
-			amplitude = amplitudeVal;
-
-			float amplitudeValY = amplitudeY;
-			ImGui::SliderFloat("Amplitude Y", &amplitudeValY, -1.0f, 1.0f);
-			amplitudeY = amplitudeValY;
-
-			float freqXVal = freqX;
-			ImGui::SliderFloat("Freq X", &freqXVal, -1.0f, 1.0f);
-			freqX = freqXVal;
-
-			float freqYVal = freqY;
-			ImGui::SliderFloat("Freq Y", &freqYVal, -1.0f, 1.0f);
-			freqY = freqYVal;
+			ImGui::SliderFloat("Speed X", &State::instance()->speedX, -10.0f, 10.0f);
+			ImGui::SliderFloat("Speed Y", &State::instance()->speedY, -10.0f, 10.0f);
+			
+			ImGui::SliderFloat("Amplitude X", &State::instance()->amplitudeX, -1.0f, 1.0f);
+			ImGui::SliderFloat("Amplitude Y", &State::instance()->amplitudeY, -1.0f, 1.0f);
+			
+			ImGui::SliderFloat("Freq X", &State::instance()->freqX, -1.0f, 1.0f);
+			ImGui::SliderFloat("Freq Y", &State::instance()->freqY, -1.0f, 1.0f);
 
 			ImGui::Spacing();
 
@@ -177,7 +145,7 @@ void imgui_worker() {
         glfwSwapBuffers(window);
 	}
 
-	running = false;
+	State::instance()->running = false;
 
 	ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -253,14 +221,14 @@ int main() {
 		keys[i]->setVisibility(true);
 	}
 
-	while (!glfwWindowShouldClose(window) && running) {
+	while (!glfwWindowShouldClose(window) && State::instance()->running) {
 		ZoneScoped;
 		glfwPollEvents();
 
-		if (showKeys) {
+		if (State::instance()->showKeys) {
 			for (int i = 0; i < 8; i++) {
-				keys[i]->revealedAmount = revealAmount;
-				keys[i]->positonForCircle(glfwGetTime(), speed, speedY, amplitude, amplitudeY, freqX, freqY);
+				keys[i]->revealedAmount = State::instance()->revealAmount;
+				keys[i]->positonForCircle(glfwGetTime(), State::instance()->speedX, State::instance()->speedY, State::instance()->amplitudeX, State::instance()->amplitudeY, State::instance()->freqX, State::instance()->freqY);
 				keys[i]->render();
 			}
 		}
@@ -268,7 +236,7 @@ int main() {
 		FrameMark;
 	}
 
-	running = false;
+	State::instance()->running = false;
 
 	for (int i = 0; i < 8; i++) {
 		delete keys[i];
