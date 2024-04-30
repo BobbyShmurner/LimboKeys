@@ -23,6 +23,8 @@ private:
 	unsigned int m_KeyTexture;
 	unsigned int m_OverlayTexture;
 
+	glm::mat4 m_Model = glm::mat4(1.0f);
+
 	void init(unsigned int width, unsigned int height);
 
 	const constexpr double getCircleAlpha() {

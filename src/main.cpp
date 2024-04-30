@@ -120,6 +120,8 @@ void imgui_worker() {
 				
 				ImGui::SliderFloat("Freq X", &State::instance()->freqX, -1.0f, 1.0f);
 				ImGui::SliderFloat("Freq Y", &State::instance()->freqY, -1.0f, 1.0f);
+
+				ImGui::SliderFloat("Rotation", &State::instance()->rotation, 0.0f, 360.0f);
 			}
 
 			ImGui::Spacing();

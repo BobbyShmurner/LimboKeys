@@ -11,6 +11,7 @@ public:
 	float amplitudeY = 0.6f;
 	float freqX = 1.0f;
 	float freqY = 1.0f;
+	float rotation = 0.0f;
 
 	static State* instance() {
 		static State* s = new State();

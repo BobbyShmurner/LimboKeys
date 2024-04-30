@@ -100,3 +100,8 @@ void Shader::setVec4(const char* name, float x, float y, float z, float w) const
     ZoneScoped;
     glUniform4f(glGetUniformLocation(ID, name), x, y, z, w);
 }
+
+void Shader::setMat4(const char* name, glm::mat4 value) const {
+    ZoneScoped;
+    glUniformMatrix4fv(glGetUniformLocation(ID, name), 1, GL_FALSE, glm::value_ptr(value));
+}

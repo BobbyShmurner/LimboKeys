@@ -1,4 +1,5 @@
 #include "key.hpp"
+#include "state.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -43,11 +44,17 @@ void Key::positonForCircle(double t, float speedX, float speedY, float amplitude
 void Key::init(unsigned int width, unsigned int height) {
 	ZoneScoped;
 
+	int img_width, img_height, nrChannels;
+	stbi_set_flip_vertically_on_load(true);  
+	unsigned char *key_img_data = stbi_load("resources/img/key.png", &img_width, &img_height, &nrChannels, 0);
+
+	float keyAspect = (float)img_height / (float)img_width;
+
 	static float vertices[] = {
-		-1.0f, -1.0f, 0.0f, 	0.0f, 0.0f,
-		 1.0f, -1.0f, 0.0f, 	1.0f, 0.0f,
-		 1.0f,  1.0f, 0.0f, 	1.0f, 1.0f,
-		-1.0f,  1.0f, 0.0f, 	0.0f, 1.0f,
+		-(float)width, -(float)width * keyAspect, 0.0f, 0.0f, 0.0f,
+		 (float)width, -(float)width * keyAspect, 0.0f, 1.0f, 0.0f,
+		 (float)width,  (float)width * keyAspect, 0.0f, 1.0f, 1.0f,
+		-(float)width,  (float)width * keyAspect, 0.0f, 0.0f, 1.0f,
 	};
 
 	static unsigned int indices[] = {
@@ -105,7 +112,6 @@ void Key::init(unsigned int width, unsigned int height) {
 	m_Shader = new Shader("resources/shaders/key");
 
 	// Key
-
 	glGenTextures(1, &m_KeyTexture);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_KeyTexture);
@@ -113,11 +119,7 @@ void Key::init(unsigned int width, unsigned int height) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int img_width, img_height, nrChannels;
-	stbi_set_flip_vertically_on_load(true);  
-	unsigned char *key_img_data = stbi_load("resources/img/key.png", &img_width, &img_height, &nrChannels, 0); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
 
 	if (key_img_data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, key_img_data);
@@ -230,6 +232,10 @@ void Key::render() {
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_OverlayTexture);
 	m_Shader->setInt("overlayTexture", 1);
+
+	m_Model = glm::ortho(-(float)width, (float)width, -(float)height, (float)height, -1.0f, 1.0f);
+	m_Model = glm::rotate(m_Model, float(glm::radians(State::instance()->rotation)), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_Shader->setMat4("model", m_Model);
 
 	glBindVertexArray(m_VertexArray);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ElementBuffer);
