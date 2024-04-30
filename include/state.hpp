@@ -3,6 +3,7 @@
 class State {
 public:
 	bool running = true;
+	bool spinKeys = true;
 	float revealAmount = 1.0f;
 	float speedX = 0.25f;
 	float speedY = 0.25f;
@@ -10,7 +11,9 @@ public:
 	float amplitudeY = 0.6f;
 	float freqX = 1.0f;
 	float freqY = 1.0f;
+
 	float rotation = 0.0f;
+	bool rotation_Changed = false;
 
 	bool showKeys = true;
 	bool showKeys_Changed = false;

@@ -21,10 +21,12 @@
 
 #include "tracy/Tracy.hpp"
 
-Key::Key(Color col, unsigned int width, unsigned int height) {
+Key::Key(Color col, float width) {
 	m_Col = col;
 
-	init(width, height);
+	m_Width = width;
+
+	init();
 }
 
 Key::~Key() {
@@ -41,7 +43,7 @@ void Key::positonForCircle(double t, float speedX, float speedY, float amplitude
 	setPos(x, y);
 }
 
-void Key::init(unsigned int width, unsigned int height) {
+void Key::init() {
 	ZoneScoped;
 
 	int img_width, img_height, nrChannels;
@@ -49,12 +51,13 @@ void Key::init(unsigned int width, unsigned int height) {
 	unsigned char *key_img_data = stbi_load("resources/img/key.png", &img_width, &img_height, &nrChannels, 0);
 
 	float keyAspect = (float)img_height / (float)img_width;
+	m_Height = (m_Width * keyAspect);
 
 	static float vertices[] = {
-		-(float)width, -(float)width * keyAspect, 0.0f, 0.0f, 0.0f,
-		 (float)width, -(float)width * keyAspect, 0.0f, 1.0f, 0.0f,
-		 (float)width,  (float)width * keyAspect, 0.0f, 1.0f, 1.0f,
-		-(float)width,  (float)width * keyAspect, 0.0f, 0.0f, 1.0f,
+		-m_Width, -m_Height, 0.0f, 0.0f, 0.0f,
+		 m_Width, -m_Height, 0.0f, 1.0f, 0.0f,
+		 m_Width,  m_Height, 0.0f, 1.0f, 1.0f,
+		-m_Width,  m_Height, 0.0f, 0.0f, 1.0f,
 	};
 
 	static unsigned int indices[] = {
@@ -68,16 +71,20 @@ void Key::init(unsigned int width, unsigned int height) {
 	glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
 	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-	m_Window = glfwCreateWindow(width, height, "LIMBO", NULL, NULL);
+	getWindowMaxSize(m_WindowWidth, m_WindowHeight);
+
+	m_Window = glfwCreateWindow(m_WindowWidth, m_WindowHeight, "LIMBO", NULL, NULL);
 	glfwSetWindowUserPointer(m_Window, this);
 
 	#ifdef WIN32
 	{
 		m_WindowHandle = glfwGetWin32Window(m_Window);
-		if (m_WindowHandle) {
-			ShowWindow((HWND)m_WindowHandle, SW_HIDE);
-			SetWindowLongPtr((HWND)m_WindowHandle, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW);
+		if (!m_WindowHandle) {
+			State::exit("Failed to get window handle!\n");
 		}
+
+		ShowWindow((HWND)m_WindowHandle, SW_HIDE);
+		SetWindowLongPtr((HWND)m_WindowHandle, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_OVERLAPPEDWINDOW | WS_EX_WINDOWEDGE);
 	}
 	#endif
 
@@ -234,7 +241,7 @@ void Key::render() {
 	m_Shader->setInt("overlayTexture", 1);
 
 	m_Model = glm::ortho(-(float)width, (float)width, -(float)height, (float)height, -1.0f, 1.0f);
-	m_Model = glm::rotate(m_Model, float(glm::radians(State::instance()->rotation)), glm::vec3(0.0f, 0.0f, 1.0f));
+	m_Model = glm::rotate(m_Model, float(glm::radians(rotation)), glm::vec3(0.0f, 0.0f, 1.0f));
 	m_Shader->setMat4("model", m_Model);
 
 	glBindVertexArray(m_VertexArray);
@@ -266,30 +273,47 @@ void Key::setVisibility(bool visible) {
 	}
 }
 
+void Key::getWindowMaxSize(unsigned int& width, unsigned int& height) {
+	ZoneScoped;
+
+	float x_alpha = glm::atan2(m_Height, m_Width);
+	float y_alpha = glm::atan2(m_Width, m_Height);
+
+	width = (unsigned int)glm::ceil(m_Width * glm::abs(glm::cos(x_alpha)) + m_Height * glm::abs(glm::sin(x_alpha)));
+	height = (unsigned int)glm::ceil(m_Width * glm::abs(glm::sin(y_alpha)) + m_Height * glm::abs(glm::cos(y_alpha)));
+}
+
+void Key::clearBoarderFix() {
+	ZoneScoped;
+	#ifdef WIN32
+		SetWindowLongPtr((HWND)m_WindowHandle, GWL_EXSTYLE, WS_EX_WINDOWEDGE);
+	#endif
+}
+
 void Key::setDecoration(bool show) {
 	ZoneScoped;
 
-	int width, height;
-	glfwGetWindowSize(m_Window, &width, &height);
-
 	glfwSetWindowAttrib(m_Window, GLFW_DECORATED, show);
-	glfwSetWindowSize(m_Window, width + 4 , height + 4);
+	clearBoarderFix();
+	m_UpdatePos();
 }
 
-void Key::setPosAbs(int x, int y) {
+void Key::setPos(glm::vec2 pos) {
+	ZoneScoped;
+	m_Pos = pos;
+	m_UpdatePos();
+}
+
+void Key::m_SetPosAbs(int x, int y) {
 	ZoneScoped;
 	#ifdef WIN32
-		if (m_WindowHandle) {
-			SetWindowPos((HWND)m_WindowHandle, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING | SWP_DEFERERASE);
-		} else {
-			glfwSetWindowPos(m_Window, x, y);
-		}
+		SetWindowPos((HWND)m_WindowHandle, NULL, x, y, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE | SWP_NOCOPYBITS | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING | SWP_DEFERERASE);
 	#else
 		glfwSetWindowPos(m_Window, x, y);
 	#endif
 }
 
-void Key::setPos(float x, float y) {
+void Key::m_UpdatePos() {
 	ZoneScoped;
 	int screen_width, screen_height;
 	int width, height;
@@ -301,8 +325,8 @@ void Key::setPos(float x, float y) {
 
 	glfwGetWindowSize(m_Window, &width, &height);
 
-	xAbs = (int)(glm::round((x + 1) * 0.5f * screen_width - width * 0.5f));
-	yAbs = (int)(glm::round((y + 1) * 0.5f * screen_height - height * 0.5f));
+	xAbs = (int)(glm::round((m_Pos.x + 1) * 0.5f * screen_width - width * 0.5f));
+	yAbs = (int)(glm::round((m_Pos.y + 1) * 0.5f * screen_height - height * 0.5f));
 
-	return setPosAbs(xAbs, yAbs);
+	return m_SetPosAbs(xAbs, yAbs);
 }

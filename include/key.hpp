@@ -23,9 +23,16 @@ private:
 	unsigned int m_KeyTexture;
 	unsigned int m_OverlayTexture;
 
+	float m_Width;
+	float m_Height;
+	glm::vec2 m_Pos = glm::vec2(0.0f, 0.0f);
+
+	unsigned int m_WindowWidth = 0;
+	unsigned int m_WindowHeight = 0;
+
 	glm::mat4 m_Model = glm::mat4(1.0f);
 
-	void init(unsigned int width, unsigned int height);
+	void init();
 
 	const constexpr double getCircleAlpha() {
 		switch (m_Col) {
@@ -49,19 +56,25 @@ private:
 				return 0.0;
 		}
 	}
+
+	void m_UpdatePos();
+	void m_SetPosAbs(int x, int y);
 public:
 	float revealedAmount = 0.0f;
+	float rotation = 0.0f;
 
-	Key(Color col, unsigned int width, unsigned int height);
+	Key(Color col, float width);
 	~Key();
 
-	void setPos(float x, float y);
-	void setPosAbs(int x, int y);
-
+	inline void setPos(float x, float y) { setPos(glm::vec2(x, y)); }
+	void setPos(glm::vec2 pos);
 	void setVisibility(bool visible);
 	void setDecoration(bool show);
 
+	void getWindowMaxSize(unsigned int& width, unsigned int& height);
+
 	void positonForCircle(double t, float speedX = 0.25f, float speedY = 0.25f, float amplitudeX = 0.6f, float amplitudeY = 0.6f, float freqX = 1.0f, float freqY = 1.0f);
+	void clearBoarderFix();
 
 	void render();
 };

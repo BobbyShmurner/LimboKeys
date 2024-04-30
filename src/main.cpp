@@ -112,12 +112,17 @@ void imgui_worker() {
 				State::instance()->showKeys_Changed = true;
 			}
 
+			ImGui::Checkbox("Spin Keys", &State::instance()->spinKeys);
+
             if (ImGui::Checkbox("Decorate Key Windows", &State::instance()->decorateKeyWindows)) {
 				State::instance()->decorateKeyWindows_Changed = true;
 			}
 			
 			ImGui::SliderFloat("Reveal Amount", &State::instance()->revealAmount, 0.0f, 1.0f);
-			ImGui::SliderFloat("Rotation", &State::instance()->rotation, 0.0f, 360.0f);
+
+			if (ImGui::SliderFloat("Rotation", &State::instance()->rotation, 0.0f, 360.0f)) {
+				State::instance()->rotation_Changed = true;
+			}
 
 			ImGui::Spacing();
 
@@ -210,19 +215,18 @@ int main() {
 	printf("Loading ImGui...\n");
 
 	std::thread imgui_thread(imgui_worker);
-	imgui_thread.detach();
 
 	printf("Creating Keys...\n");
 
 	Key* keys[8] = {
-		new Key(Color::GREEN,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::YELLOW,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::BLUE,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::PURPLE,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::PINK,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::AQUA,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::LIME,	DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
-		new Key(Color::RED,		DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT),
+		new Key(Color::GREEN,	DEFAULT_WINDOW_WIDTH),
+		new Key(Color::YELLOW,	DEFAULT_WINDOW_WIDTH),
+		new Key(Color::BLUE,	DEFAULT_WINDOW_WIDTH),
+		new Key(Color::PURPLE,	DEFAULT_WINDOW_WIDTH),
+		new Key(Color::PINK,	DEFAULT_WINDOW_WIDTH),
+		new Key(Color::AQUA,	DEFAULT_WINDOW_WIDTH),
+		new Key(Color::LIME,	DEFAULT_WINDOW_WIDTH),
+		new Key(Color::RED,		DEFAULT_WINDOW_WIDTH),
 	};
 
 	printf("Created Keys!\n");
@@ -252,10 +256,24 @@ int main() {
 			}
 		}
 
+		if (State::instance()->rotation_Changed) {
+			State::instance()->rotation_Changed = false;
+
+			for (int i = 0; i < 8; i++) {
+				keys[i]->rotation = State::instance()->rotation;
+			}
+		}
+
+		
+
 		if (State::instance()->showKeys) {
 			for (int i = 0; i < 8; i++) {
 				keys[i]->revealedAmount = State::instance()->revealAmount;
-				keys[i]->positonForCircle(glfwGetTime(), State::instance()->speedX, State::instance()->speedY, State::instance()->amplitudeX, State::instance()->amplitudeY, State::instance()->freqX, State::instance()->freqY);
+
+				if (State::instance()->spinKeys) {
+					keys[i]->positonForCircle(glfwGetTime(), State::instance()->speedX, State::instance()->speedY, State::instance()->amplitudeX, State::instance()->amplitudeY, State::instance()->freqX, State::instance()->freqY);
+				}
+
 				keys[i]->render();
 			}
 		}
@@ -268,6 +286,8 @@ int main() {
 	for (int i = 0; i < 8; i++) {
 		delete keys[i];
 	}
+
+	imgui_thread.join();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
