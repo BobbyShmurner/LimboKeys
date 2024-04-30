@@ -17,4 +17,9 @@ public:
 		static State* s = new State();
 		return s;
 	}
+
+	static void exit(const char* msg, int code = 1) {
+		fprintf(code == 0 ? stdout : stderr, "%s\n", msg);
+		instance()->running = false;
+	}
 };

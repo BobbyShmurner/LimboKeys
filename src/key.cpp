@@ -125,7 +125,7 @@ void Key::init(unsigned int width, unsigned int height) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, key_img_data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else {
-		printf("Failed to load texture!\n");
+		State::exit("Failed to load texture!\n");
 	}
 
 	stbi_image_free(key_img_data);
@@ -147,7 +147,7 @@ void Key::init(unsigned int width, unsigned int height) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img_width, img_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, key_col_img_data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	} else {
-		printf("Failed to load texture!\n");
+		State::exit("Failed to load texture!\n");
 	}
 
 	stbi_image_free(key_col_img_data);

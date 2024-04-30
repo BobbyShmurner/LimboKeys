@@ -1,6 +1,8 @@
 #include "shader.hpp"
+#include "state.hpp"
 
 #include "tracy/Tracy.hpp"
+#include <format>
 
 Shader::Shader(std::string path) {
     ZoneScoped;
@@ -30,7 +32,7 @@ Shader::Shader(std::string path) {
         vertexCode   = vShaderStream.str();
         fragmentCode = fShaderStream.str();		
     } catch (std::ifstream::failure e) {
-        printf("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n");
+        State::exit("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ\n");
     }
 
     const char* vShaderCode = vertexCode.c_str();
@@ -47,7 +49,7 @@ Shader::Shader(std::string path) {
 	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-		printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n%s\n", infoLog);
+		State::exit(std::format("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n{}\n", infoLog).c_str());
 	};
 
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -57,7 +59,7 @@ Shader::Shader(std::string path) {
 	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
 	if (!success) {
 		glGetShaderInfoLog(fragment, 512, NULL, infoLog);
-		printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n%s\n", infoLog);
+        State::exit(std::format("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n{}\n", infoLog).c_str());
 	};
 
     ID = glCreateProgram();
