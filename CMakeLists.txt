@@ -31,6 +31,9 @@ link_directories(${GLEW_LIBRARIES})
 add_subdirectory(extern/tracy)
 include_directories(extern/tracy/public/tracy)
 
+add_subdirectory(extern/json)
+include_directories(extern/json/include)
+
 include_directories(include)
 
 add_executable(LimboKeys
@@ -39,4 +42,4 @@ src/main.cpp
 	src/shader.cpp
 )
 
-target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES} Release/x64/glew32s Tracy::TracyClient -static-libgcc -static-libstdc++)
+target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES} Release/x64/glew32s Tracy::TracyClient nlohmann_json::nlohmann_json -static-libgcc -static-libstdc++)
