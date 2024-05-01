@@ -1,5 +1,6 @@
-#include "key.hpp"
+#include "key_manager.hpp"
 #include "state.hpp"
+#include "key.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -21,12 +22,12 @@
 
 #include "tracy/Tracy.hpp"
 
-Key::Key(Color col, float width) {
+Key::Key(KeyManager* manager, Color col, float width) {
+	m_Manager = manager;
+	m_Width = width;
 	m_Col = col;
 
-	m_Width = width;
-
-	init();
+	manager->addKey(this);
 }
 
 Key::~Key() {
@@ -43,7 +44,7 @@ void Key::positonForCircle(double t, float speedX, float speedY, float amplitude
 	setPos(x, y);
 }
 
-void Key::init() {
+void Key::initWindow() {
 	ZoneScoped;
 
 	int img_width, img_height, nrChannels;

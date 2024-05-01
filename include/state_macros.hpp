@@ -9,6 +9,8 @@
 	state##_Changed = true; \
 	}((void)0
 
+#define RAISE_STATE_CHANGED(ident) ident##_Changed = true
+
 #define STATE_NOTIFY_IMGUI if (
 
 #define STATE_CHANGED(ident) \

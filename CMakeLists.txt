@@ -37,9 +37,10 @@ include_directories(extern/json/include)
 include_directories(include)
 
 add_executable(LimboKeys
-src/key.cpp
-src/main.cpp
+	src/key.cpp
+	src/main.cpp
 	src/shader.cpp
+	src/key_manager.cpp
 )
 
 target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES} Release/x64/glew32s Tracy::TracyClient nlohmann_json::nlohmann_json -static-libgcc -static-libstdc++)

@@ -6,10 +6,10 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 
-#include "key.hpp"
+#include "fonts/LatoBold.hpp"
+#include "key_manager.hpp"
 #include "state.hpp"
 #include "colors.hpp"
-#include "fonts/LatoBold.hpp"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/constants.hpp"
@@ -210,51 +210,47 @@ int main() {
 
 	printf("Creating Keys...\n");
 
-	Key* keys[8] = {
-		new Key(Color::GREEN,	DEFAULT_WINDOW_WIDTH),
-		new Key(Color::YELLOW,	DEFAULT_WINDOW_WIDTH),
-		new Key(Color::BLUE,	DEFAULT_WINDOW_WIDTH),
-		new Key(Color::PURPLE,	DEFAULT_WINDOW_WIDTH),
-		new Key(Color::PINK,	DEFAULT_WINDOW_WIDTH),
-		new Key(Color::AQUA,	DEFAULT_WINDOW_WIDTH),
-		new Key(Color::LIME,	DEFAULT_WINDOW_WIDTH),
-		new Key(Color::RED,		DEFAULT_WINDOW_WIDTH),
-	};
+	KeyManager* manager = new KeyManager("test");
+
+	new Key(manager, Color::GREEN,	DEFAULT_WINDOW_WIDTH);
+	new Key(manager, Color::YELLOW,	DEFAULT_WINDOW_WIDTH);
+	new Key(manager, Color::BLUE,	DEFAULT_WINDOW_WIDTH);
+	new Key(manager, Color::PURPLE,	DEFAULT_WINDOW_WIDTH);
+	new Key(manager, Color::PINK,	DEFAULT_WINDOW_WIDTH);
+	new Key(manager, Color::AQUA,	DEFAULT_WINDOW_WIDTH);
+	new Key(manager, Color::LIME,	DEFAULT_WINDOW_WIDTH);
+	new Key(manager, Color::RED,	DEFAULT_WINDOW_WIDTH);
+
+	manager->initKeyWindows();
+	RAISE_STATE_CHANGED(State::instance()->showKeys);
 
 	printf("Created Keys!\n");
-
-	for (int i = 0; i < 8; i++) {
-		keys[i]->setPos(0.8f * (i / 3.5f - 1.0f), 0.0f);
-		keys[i]->setVisibility(true);
-	}
 
 	while (!glfwWindowShouldClose(window) && State::instance()->running) {
 		ZoneScoped;
 		glfwPollEvents();
 
 		if STATE_CHANGED(State::instance()->decorateKeyWindows) {
-			for (int i = 0; i < 8; i++) {
-				keys[i]->setDecoration(State::instance()->decorateKeyWindows);
+			for (auto key : manager->keys()) {
+				key->setDecoration(State::instance()->decorateKeyWindows);
 			}
 		}
 
 		if STATE_CHANGED(State::instance()->showKeys) {
-			for (int i = 0; i < 8; i++) {
-				keys[i]->setVisibility(State::instance()->showKeys);
-			}
+			manager->setKeyVisibility(State::instance()->showKeys);
 		}
 
 		if (State::instance()->showKeys) {
-			for (int i = 0; i < 8; i++) {
-				keys[i]->revealedAmount = State::instance()->revealAmount;
-				keys[i]->rotation = State::instance()->rotation;
+			for (auto key : manager->keys()) {
+				key->revealedAmount = State::instance()->revealAmount;
+				key->rotation = State::instance()->rotation;
 
 				if (State::instance()->spinKeys) {
-					keys[i]->positonForCircle(glfwGetTime(), State::instance()->speedX, State::instance()->speedY, State::instance()->amplitudeX, State::instance()->amplitudeY, State::instance()->freqX, State::instance()->freqY);
+					key->positonForCircle(glfwGetTime(), State::instance()->speedX, State::instance()->speedY, State::instance()->amplitudeX, State::instance()->amplitudeY, State::instance()->freqX, State::instance()->freqY);
 				}
-
-				keys[i]->render();
 			}
+
+			manager->render();
 		}
 
 		FrameMark;
@@ -262,9 +258,7 @@ int main() {
 
 	State::instance()->running = false;
 
-	for (int i = 0; i < 8; i++) {
-		delete keys[i];
-	}
+	delete manager;
 
 	imgui_thread.join();
 

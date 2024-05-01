@@ -10,7 +10,10 @@
 
 #include "glm/gtc/constants.hpp"
 
+class KeyManager;
+
 class Key {
+friend class KeyManager;
 private:
 	Color m_Col;
 	GLFWwindow* m_Window;
@@ -32,7 +35,7 @@ private:
 
 	glm::mat4 m_Model = glm::mat4(1.0f);
 
-	void init();
+	KeyManager* m_Manager = nullptr;
 
 	const constexpr double getCircleAlpha() {
 		switch (m_Col) {
@@ -59,12 +62,15 @@ private:
 
 	void m_UpdatePos();
 	void m_SetPosAbs(int x, int y);
+
+	~Key();
 public:
 	float revealedAmount = 0.0f;
 	float rotation = 0.0f;
 
-	Key(Color col, float width);
-	~Key();
+	Key(KeyManager* manager, Color col, float width);
+
+	void initWindow();
 
 	inline void setPos(float x, float y) { setPos(glm::vec2(x, y)); }
 	void setPos(glm::vec2 pos);
