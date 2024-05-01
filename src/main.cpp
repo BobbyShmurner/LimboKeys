@@ -231,9 +231,7 @@ int main() {
 		glfwPollEvents();
 
 		if STATE_CHANGED(State::instance()->decorateKeyWindows) {
-			for (auto key : manager->keys()) {
-				key->setDecoration(State::instance()->decorateKeyWindows);
-			}
+			manager->setKeyDecoration(State::instance()->decorateKeyWindows);
 		}
 
 		if STATE_CHANGED(State::instance()->showKeys) {

@@ -58,3 +58,9 @@ void KeyManager::setKeyVisibility(bool visible) {
 		key->setVisibility(visible);
 	}
 }
+
+void KeyManager::setKeyDecoration(bool show) {
+	for (Key* key : m_Keys) {
+		key->setDecoration(show);
+	}
+}

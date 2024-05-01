@@ -24,6 +24,7 @@ public:
 
 	void render();
 	void initKeyWindows();
+	void setKeyDecoration(bool show);
 	void setKeyVisibility(bool visible);
 
 	static void setCurrent(KeyManager* manager, bool unloadCurrent = true);
