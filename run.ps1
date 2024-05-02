@@ -21,4 +21,10 @@ if ($Release) {
 	$BuildPath += "/Debug"
 }
 
-Invoke-Expression "& `"$BuildPath/LimboKeys.exe`""
+try {
+	Push-Location "$BuildPath/bin"
+	Invoke-Expression "& `".\LimboKeys.exe`""
+}
+finally {
+	Pop-Location
+}

@@ -9,8 +9,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} cmake/)
-
-message("CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS})
@@ -34,13 +33,4 @@ include_directories(extern/tracy/public/tracy)
 add_subdirectory(extern/json)
 include_directories(extern/json/include)
 
-include_directories(include)
-
-add_executable(LimboKeys
-	src/key.cpp
-	src/main.cpp
-	src/shader.cpp
-	src/key_manager.cpp
-)
-
-target_link_libraries(LimboKeys ${OPENGL_LIBRARIES} ${IMGUI_LIBRARIES} Release/x64/glew32s Tracy::TracyClient nlohmann_json::nlohmann_json -static-libgcc -static-libstdc++)
+add_subdirectory(runtime)
